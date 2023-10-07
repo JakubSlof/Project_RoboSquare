@@ -2,11 +2,13 @@
 #include "SmartServoBus.hpp"
 #include <robotka.h>
 const int wheel_diameter = 62;
+const int wheel_base = 120;
 
-//to do upravit parametry
-//void turn(int degrees,int speed){
-//  rkMotorsDrive(100, PI * wheel_diameter * degrees/360 ,speed);
-//}
+//turn robot on place in degrees 
+void turn(int degrees,int speed){
+  rkMotorsDrive(- ((PI * wheel_base) / 360) * degrees, ((PI * wheel_base) / 360) * degrees ,speed);
+}
+//checks battery percent
 void check_battery(){
   int battery_percent = 0;
   int battery_mid = 50;
