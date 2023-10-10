@@ -1,3 +1,4 @@
+#ifndef ROBOSQUARE
 #include <Arduino.h>
 #include "SmartServoBus.hpp"
 #include <robotka.h>
@@ -23,6 +24,20 @@ void check_battery();
  * \param speed speed of turn 
  */
 void turn(int degrees, int speed);
-}; 
 
+/**
+ * \brief Turns robot in arc.
+ *
+ * \param degrees degrees you want robot to turn
+ * \param speed speed of turn 
+ * \param radius radius of the arc (outer wheel)
+ */
+void arc(int angle, int radius, int speed);
+  private:
+int degrees;
+int speed;
+int angle;
+int radius;
+}; 
+#endif
 

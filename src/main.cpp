@@ -1,5 +1,4 @@
 #include "Robo_Square.h"
- 
 RoboSquare RBS;
 
 void setup() {
