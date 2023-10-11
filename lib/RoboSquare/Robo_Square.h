@@ -32,12 +32,13 @@ void turn(int degrees, int speed);
  * \param speed speed of turn 
  * \param radius radius of the arc (outer wheel)
  */
-void arc(int angle, int radius, int speed);
+void arc(int angle, int radius, int speed,char side);
   private:
 int degrees;
 int speed;
 int angle;
 int radius;
+char side;
 }; 
 #endif
 

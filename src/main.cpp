@@ -1,4 +1,6 @@
 #include "Robo_Square.h"
+#include<thread>
+#include<Arduino.h>
 RoboSquare RBS;
 
 void setup() {
@@ -9,6 +11,7 @@ void setup() {
   cfg.motor_max_acceleration = 15000;
   rkSetup(cfg);
   Serial.begin(115200);//starts serial communication
+  std::thread thread1(&RoboSquare::check_battery, &RBS);// example of using thread 
   RBS.check_battery();
 }
 
