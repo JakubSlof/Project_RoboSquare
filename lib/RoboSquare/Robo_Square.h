@@ -4,9 +4,9 @@
 #include <robotka.h>
 
 
-#define DEAFULT_WHEEL_DIAMETER 62 //deafult wheel diameter
-#define DEAFULT_WHEEL_BASE 120 //deafult wheel base
- 
+#define DEAFULT_WHEEL_DIAMETER 70 //deafult wheel diameter
+#define DEAFULT_WHEEL_BASE 170 //deafult wheel base
+#define AC 3.64 //constant to gear ratio 
 
 
 class RoboSquare
@@ -23,7 +23,7 @@ void check_battery();
  * \param degrees degrees you want robot to turn
  * \param speed speed of turn 
  */
-void turn(int degrees, int speed);
+void turn(double degrees, int speed);
 
 /**
  * \brief Turns robot in arc.
@@ -32,13 +32,22 @@ void turn(int degrees, int speed);
  * \param speed speed of turn 
  * \param radius radius of the arc (outer wheel)
  */
-void arc(int angle, int radius, int speed,char side);
+void arc(double angle, int radius, int speed,std::string side);
+
+/**
+ * \brief Moves robot forward.
+ *
+ * \param speed speed of robot
+ * \param lenght lenght how far should robot go 
+ */
+void forward(int lenght, int speed);
+
   private:
 int degrees;
 int speed;
 int angle;
 int radius;
-char side;
+std::string side;
 }; 
 #endif
 

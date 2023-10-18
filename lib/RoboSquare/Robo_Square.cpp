@@ -15,23 +15,28 @@ void RoboSquare::check_battery(){
     rkLedRed(true); // turn on red LED
   }
 }
-
-void RoboSquare::turn(int degrees,int speed){
-  rkMotorsDrive(- ((PI * wheel_base) / 360) * degrees, ((PI * wheel_base) / 360) * degrees ,speed);
+void RoboSquare::forward(int lenght, int speed){
+  rkMotorsDrive(lenght * AC,lenght * AC,speed);
 }
-void RoboSquare::arc(int angle, int radius, int speed, char side){
-    int inner_length = (2 * PI * radius) / 360 * degrees;
-    int outer_lenght = (2*PI*(wheel_base+radius)) / 360 * degrees;
-  if(side == 'left'){
-    rkMotorsDriveLeftAsync(inner_length, speed, []() {printf("Dojel jsem!\n");});
-    rkMotorsDriveRightAsync(outer_lenght, (speed*outer_lenght)/inner_length, []() {printf("Dojel jsem!\n");});
+
+void RoboSquare::turn(double degrees,int speed){
+  degrees = degrees + 11;
+  rkMotorsDrive(-((PI * wheel_base) / 360) * degrees*AC, ((PI * wheel_base) / 360) * degrees*AC ,speed);
+}
+
+void RoboSquare::arc(double angle, int radius, int speed, std::string side){
+    int inner_length = (2 * PI * radius) / 360 * angle*AC;
+    int outer_lenght = (2*PI*(wheel_base+radius)) / 360 * angle*AC;
+  if(side == "left"){
+    rkMotorsDriveLeftAsync(inner_length, speed, []() {Serial.print("Dojel jsem!\n");});
+    rkMotorsDriveRightAsync(outer_lenght, (speed*outer_lenght)/inner_length, []() {Serial.print("Dojel jsem!\n");});
   }
-  if(side == 'right'){
-    rkMotorsDriveRightAsync(inner_length, speed, []() {printf("Dojel jsem!\n");});
-    rkMotorsDriveLeftAsync(outer_lenght, (speed*outer_lenght)/inner_length, []() {printf("Dojel jsem!\n");});
+  if(side == "right"){
+    rkMotorsDriveRightAsync(inner_length, speed, []() {Serial.print("Dojel jsem!\n");});
+    rkMotorsDriveLeftAsync(outer_lenght, (speed*outer_lenght)/inner_length, []() {Serial.print("Dojel jsem!\n");});
   }
   else{
-    Serial.println('wrong argument in function arc please insert left or right in argument side');
+    Serial.println("error");
   }
   
 }
