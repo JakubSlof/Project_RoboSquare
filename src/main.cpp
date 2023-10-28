@@ -1,8 +1,10 @@
 #include "Robo_Square.h"
 #include<thread>
 #include<Arduino.h>
+#include<RBCXMpu.h>
 RoboSquare RBS;
-
+//using namespace rb;
+rb::Mpu mpuu;
 void setup() {
   rkConfig cfg;
   cfg.motor_max_power_pct = 100; // limit the power
@@ -12,13 +14,42 @@ void setup() {
   rkSetup(cfg);
   Serial.begin(115200);//starts serial communication
   //std::thread thread1(&RoboSquare::check_battery, &RBS);// example of using thread 
-  RBS.check_battery();
+  //RBS.check_battery();
   //RBS.arc(90,250,20,"left");
-  RBS.turn(90,100);//nefunguje
+  //RBS.turn(90,100);//nefunguje
   //RBS.forward(1000,80);//funguje 
-  
+ // int count = 5;
+ // for (size_t i = 0; i < count; i++)
+ // {
+ //    Serial.println("69");
+  //while (true)
+ // {
+   // int number = Serial.parseInt();
+   // if (number==1){
+   //   break;
+  //  }
+ // }
+  //popojeti virtual 
+ // rkLedBlue(true);
+ // delay(8000);
+  //rkLedBlue(false);
+ // delay(1000);
+  //Serial.println("69");
+  //}
+
+mpuu.init();
+mpuu.sendStart();
+mpuu.setCalibrationData();
 }
 
+
+
 void loop() {
+ float gyro = 0;
+  gyro = mpuu.getGyroY();
+  Serial.println(mpuu.getGyroX());
+  Serial.println(mpuu.getGyroZ());
+  Serial.println(mpuu.getAngleX());
+  Serial.println(mpuu.getAngleY());
 }
 
