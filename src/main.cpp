@@ -1,10 +1,7 @@
 #include "Robo_Square.h"
 #include<thread>
 #include<Arduino.h>
-#include<RBCXMpu.h>
 RoboSquare RBS;
-//using namespace rb;
-rb::Mpu mpuu;
 void setup() {
   rkConfig cfg;
   cfg.motor_max_power_pct = 100; // limit the power
@@ -37,19 +34,11 @@ void setup() {
   //Serial.println("69");
   //}
 
-mpuu.init();
-mpuu.sendStart();
-mpuu.setCalibrationData();
+
 }
 
 
 
 void loop() {
- float gyro = 0;
-  gyro = mpuu.getGyroY();
-  Serial.println(mpuu.getGyroX());
-  Serial.println(mpuu.getGyroZ());
-  Serial.println(mpuu.getAngleX());
-  Serial.println(mpuu.getAngleY());
-}
 
+}
