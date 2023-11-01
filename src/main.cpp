@@ -15,28 +15,20 @@ void setup() {
   //RBS.arc(90,250,20,"left");
   //RBS.turn(90,100);//nefunguje
   //RBS.forward(1000,80);//funguje 
-  int count = 5;
-  for (size_t i = 0; i < count; i++)
-  {
-     Serial.println("69");
-  while (true)
-  {
- int number = Serial.parseInt();
- if (number==1){
-      break;
-   }
+  int count = 15;
+   Serial.println("69");
+   for (size_t i = 0; i < count; i++){
+      while (true){
+         int number = Serial.parseInt();
+         if (number==1){
+         break;
+         }
+      }
+   RBS.forward(-100,50);
+   delay(1000);
+   Serial.println("69");
   }
-  //popojeti virtual 
- RBS.forward(-100,50);
- delay(100);
-  Serial.println("69");
-  }
-
-
 }
 
-
-
 void loop() {
-
 }
