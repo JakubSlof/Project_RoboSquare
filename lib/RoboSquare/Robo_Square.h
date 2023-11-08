@@ -33,9 +33,10 @@ void turn(double angle, int speed);
  * \param speed speed of turn 
  * \param radius radius of the arc (outer wheel)
  * \param side "right" or "left" 
+ * \param calibration calibration constant 
  * \warning radius must be bigger than robot wheel base 
  */
-void arc(double angle, double radius, int speed,std::string side);
+void arc(double angle, double radius,int speed,int calibration,std::string side);
 
 /**
  * \brief Moves robot forward.

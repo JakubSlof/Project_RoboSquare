@@ -12,23 +12,39 @@ void setup() {
   Serial.begin(115200);//starts serial communication
   //std::thread thread1(&RoboSquare::check_battery, &RBS);// example of using thread 
   RBS.check_battery();
-  //RBS.arc(90,250,20,"left");
-  //RBS.turn(90,100);//nefunguje
+  //RBS.arc(80,250,20,"left");
+  //RBS.turn(80,100);//nefunguje
   //RBS.forward(1000,80);//funguje 
-  int count = 15;
-   Serial.println("69");
-   for (size_t i = 0; i < count; i++){
-      while (true){
-         int number = Serial.parseInt();
-         if (number==1){
-         break;
-         }
-      }
-   RBS.forward(-100,50);
-   delay(1000);
-   Serial.println("69");
-  }
+  //int count = 15;
+  // Serial.println("69");
+  // for (size_t i = 0; i < count; i++){
+  //    while (true){
+  //       int number = Serial.parseInt();
+  //       if (number==1){
+  //       break;
+  //       }
+  //    }
+  // start tlacitko
+    while (true) {
+        if (rkButtonIsPressed(BTN_UP)) {
+            break;
+        }
+    } 
+        //esko s oblouky
+    RBS.forward(500,100);
+    RBS.arc(180,150,100,0,"right");
+    delay(3000);
+    RBS.forward(100,100);
+    RBS.arc(180,150,100,-1,"left");
+    delay(3000);  
+    RBS.forward(1000,100);
+    
 }
+
+
+
+   
+
 
 void loop() {
 }
