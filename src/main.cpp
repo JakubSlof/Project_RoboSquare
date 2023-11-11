@@ -2,6 +2,63 @@
 #include<thread>
 #include<Arduino.h>
 RoboSquare RBS;
+
+
+void forward_f(int distance){
+    distance = distance * RBS.gears_ratio;
+    double left = 0;
+    double right =0;
+    rkMotorsSetSpeed(100,100);
+    while (left <= distance & right <= distance) 
+    {
+     left = rkMotorsGetPositionLeft();
+     right = rkMotorsGetPositionRight();
+     delay(1);
+    }
+    rkMotorsSetSpeed(0,0);  
+}
+
+void arc_f(double angle, double radius, int speed, int calibration, std::string side){
+    angle = angle + calibration;
+        double inner_length = (2 * PI * radius) / 360 * angle * RBS.gears_ratio;
+        double outer_lenght = (2 * PI * (RBS.wheel_base + radius)) / 360 * angle * RBS.gears_ratio;
+        int inner_speed = speed * (inner_length/outer_lenght);
+        int outer_speed = speed;
+    if(side == "left"){
+        double left = 0;
+        double right = 0;
+        rkMotorsSetSpeedLeft(inner_speed);
+        rkMotorsSetSpeedRight(outer_speed);
+        while (left <= inner_length & right <= outer_lenght) 
+            {
+            left = rkMotorsGetPositionLeft();
+            right = rkMotorsGetPositionRight();
+            delay(1);
+            }
+             rkMotorsSetSpeed(0,0);  
+        //rkMotorsDriveLeftAsync(inner_length, speed * (inner_length/outer_lenght), []() {Serial.print("Dojel jsem!\n");});
+        //rkMotorsDriveRightAsync(outer_lenght, speed, []() {Serial.print("Dojel jsem!\n");});
+    }
+    if(side == "right"){
+        double left = 0;
+        double right = 0;
+        rkMotorsSetSpeedLeft(outer_speed);
+        rkMotorsSetSpeedRight(inner_speed);
+        while (left <= outer_lenght & right <= inner_length) 
+            {
+            left = rkMotorsGetPositionLeft();
+            right = rkMotorsGetPositionRight();
+            delay(1);
+            }
+             rkMotorsSetSpeed(0,0);  
+        //rkMotorsDriveRightAsync(inner_length, speed*(inner_length/outer_lenght), []() {Serial.print("Dojel jsem!\n");});
+        //rkMotorsDriveLeftAsync(outer_lenght, speed, []() {Serial.print("Dojel jsem!\n");});
+    }
+    else{
+        Serial.println("error, used wrong argument");
+    }
+}
+
 void setup() {
   rkConfig cfg;
   cfg.motor_max_power_pct = 50; // limit the power
@@ -37,14 +94,9 @@ void setup() {
     RBS.forward(100,100);
     RBS.arc(180,150,100,-1,"left");
     delay(3000);  
-    RBS.forward(1000,100);
-    
+    RBS.forward(1000,100);  
 }
 
-
-
-   
-
-
-void loop() {
+void loop(){
+  //Serial.print("L: ");
 }
