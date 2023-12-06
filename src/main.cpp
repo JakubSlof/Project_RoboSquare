@@ -29,6 +29,7 @@ void arc_right(int angle, int radius){
         delay(1);
        }
        last_tics_M1 = last_tics_M1- tics_M1;
+       last_tics_M4 = last_tics_M4 - tics_M4;
        man.motor(rb::MotorId::M1).speed(0);
        man.motor(rb::MotorId::M4).speed(0);
 } 
