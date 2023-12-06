@@ -83,10 +83,7 @@ void setup() {
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
   
-  // Call the arc_right function with an angle of 180 degrees and a radius of 100 millimeters
   arc_right(180, 100);
-  
-  // Call the arc_left function with an angle of 180 degrees and a radius of 100 millimeters
   arc_left(180, 100);
 }
 
