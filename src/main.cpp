@@ -1,8 +1,16 @@
 #include<thread>
 #include<Arduino.h>
 #include"RBCX.h"
-
-double tics_to_mm = 0.125943580767519;//to do (72*PI)/1796
+void measuring(){
+   auto& man = rb::Manager::get(); //this needs to be there
+   while(true){
+   man.motor(rb::MotorId::M4).requestInfo([](rb::Motor& info){
+         Serial.println(info.position());
+   });
+   delay(10);
+   }
+}
+double tics_to_mm = 0.106;//to do (72*PI)/1796 0.125943580767519      500/4710
 int wheel_base = 170;
 int wheel_diameter = 72; //wheel diameter in mm
  int last_M1 = 0; //total ticks on motor 1 updated at the and of each driving function
@@ -28,6 +36,7 @@ void strait(int distance, int speed){
    }
    last_M1 = tics_M1 + last_M1;
    last_M4 = tics_M4 + last_M4;
+   
    Serial.print("lastM1: ");
    Serial.println(last_M1);
    Serial.print("lastM4: ");
@@ -37,8 +46,8 @@ void strait(int distance, int speed){
 void arc(double angle, double radius, int speed, int calibration, std::string side){
    auto& man = rb::Manager::get(); //this needs to be there
    angle = angle + calibration;
-   double inner_length = ((2 * PI * radius) / (360 * angle)) / tics_to_mm;
-   double outer_lenght = ((2 * PI * (wheel_base + radius)) / (360 * angle) )/ tics_to_mm;
+   int inner_length = ((2 * PI * radius) * ( angle / 360)) / tics_to_mm;
+   int outer_lenght = ((2 * PI * (wheel_base + radius)) * (angle / 360) )/ tics_to_mm;
    Serial.print("inner lenght: ");
    Serial.println(inner_length);
    Serial.print("outer lenght: ");
@@ -74,6 +83,8 @@ void arc(double angle, double radius, int speed, int calibration, std::string si
       Serial.println(last_M1);
       Serial.print("lastM4: ");
       Serial.println(last_M4);
+      Serial.println(tics_M1);
+      Serial.println(tics_M4);
   }
   if(side == "right"){
       int tics_M1 = 0; //counter for ticks on motor 1
@@ -115,8 +126,9 @@ auto& man = rb::Manager::get(); // get manager instance as singleton
 man.install(); // install manager
 Serial.begin(115200);
 //strait(500,32767);
-arc(180,150,3150,0,"right");
-arc(180,150,3150,0,"left");
+arc(180,100,3150,0,"left");
+//arc(180,150,3150,0,"left");
+//measuring();
 }
 
 void loop(){
