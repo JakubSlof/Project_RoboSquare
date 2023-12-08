@@ -1,5 +1,11 @@
+#include<iostream>
 #include<Arduino.h>
 #include<WiFi.h>
+#include "RBCX.h"
+#include<ctime>
+#include <string>
+ #include <sstream>
+
 // Replace with your network credentials
 const char* ssid = "Udesjede";
 const char* password = "tvojemama";
@@ -14,6 +20,7 @@ String header;
 String output26State = "off";
 String output27State = "off";
 
+
 // Assign output variables to GPIO pins
 const int output26 = 26;
 const int output27 = 27;
@@ -26,6 +33,8 @@ unsigned long previousTime = 0;
 const long timeoutTime = 2000;
 
 void setup() {
+  auto& man = rb::Manager::get(); // get manager instance as singleton
+  man.install(); // install manager
   Serial.begin(115200);
   // Initialize the output variables as outputs
   pinMode(output26, OUTPUT);
@@ -33,6 +42,10 @@ void setup() {
   // Set outputs to LOW
   digitalWrite(output26, LOW);
   digitalWrite(output27, LOW);
+
+
+
+
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
@@ -51,9 +64,10 @@ void setup() {
 }
 
 void loop(){
+  auto& man = rb::Manager::get();
   WiFiClient client = server.available();   // Listen for incoming clients
-
-  if (client) {                             // If a new client connects,
+  
+ // if (client) {                             // If a new client connects,
     currentTime = millis();
     previousTime = currentTime;
     Serial.println("New Client.");          // print a message out in the serial port
@@ -79,11 +93,11 @@ void loop(){
             if (header.indexOf("GET /26/on") >= 0) {
               Serial.println("GPIO 26 on");
               output26State = "on";
-              digitalWrite(output26, HIGH);
+              man.leds().yellow(true);//digitalWrite(output26, HIGH);
             } else if (header.indexOf("GET /26/off") >= 0) {
               Serial.println("GPIO 26 off");
+              man.leds().yellow(false);//digitalWrite(output26, LOW);
               output26State = "off";
-              digitalWrite(output26, LOW);
             } else if (header.indexOf("GET /27/on") >= 0) {
               Serial.println("GPIO 27 on");
               output27State = "on";
@@ -93,7 +107,6 @@ void loop(){
               output27State = "off";
               digitalWrite(output27, LOW);
             }
-            
             // Display the HTML web page
             client.println("<!DOCTYPE html><html>");
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
@@ -104,9 +117,13 @@ void loop(){
             client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
             client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
             client.println(".button2 {background-color: #555555;}</style></head>");
-            
+            //double duration = double(end - start) / CLOCKS_PER_SEC;
+            String myString = "55";
             // Web Page Heading
             client.println("<body><h1>ESP32 Web Server</h1>");
+            const auto& bat = man.battery();
+
+            client.println("<body><h1>ahoj tady bude udes" + String(bat.voltageMv()) + "</h1>");
             
             // Display current state, and ON/OFF buttons for GPIO 26  
             client.println("<p>GPIO 26 - State " + output26State + "</p>");
@@ -145,5 +162,6 @@ void loop(){
     client.stop();
     Serial.println("Client disconnected.");
     Serial.println("");
-  }
+    delay(100);
+  //}
 }
