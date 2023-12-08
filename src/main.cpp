@@ -48,18 +48,18 @@ void setup() {
 
 
   // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
+  //Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    //Serial.print(".");
   }
   // Print local IP address and start web server
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  //Serial.println("");
+  //Serial.println("WiFi connected.");
+  //Serial.println("IP address: ");
+  //Serial.println(WiFi.localIP());
   server.begin();
 }
 
@@ -67,16 +67,16 @@ void loop(){
   auto& man = rb::Manager::get();
   WiFiClient client = server.available();   // Listen for incoming clients
   
- // if (client) {                             // If a new client connects,
+ if (client) {                             // If a new client connects,
     currentTime = millis();
     previousTime = currentTime;
-    Serial.println("New Client.");          // print a message out in the serial port
+    //Serial.println("New Client.");          // print a message out in the serial port
     String currentLine = "";                // make a String to hold incoming data from the client
     while (client.connected() && currentTime - previousTime <= timeoutTime) {  // loop while the client's connected
       currentTime = millis();
       if (client.available()) {             // if there's bytes to read from the client,
         char c = client.read();             // read a byte, then
-        Serial.write(c);                    // print it out the serial monitor
+      //  Serial.write(c);                    // print it out the serial monitor
         header += c;
         if (c == '\n') {                    // if the byte is a newline character
           // if the current line is blank, you got two newline characters in a row.
@@ -120,10 +120,12 @@ void loop(){
             //double duration = double(end - start) / CLOCKS_PER_SEC;
             String myString = "55";
             // Web Page Heading
-            client.println("<body><h1>ESP32 Web Server</h1>");
+            client.println("<body style='background-color: lightgray;'>");
+            client.println("<body><h1>Udes Web Server</h1>");
+            client.println("<meta http-equiv='refresh' content='0.5'>");
             const auto& bat = man.battery();
 
-            client.println("<body><h1>ahoj tady bude udes" + String(bat.voltageMv()) + "</h1>");
+            client.println("<body><h1>battery voltage:" + String(bat.voltageMv()) + " mV</h1>");
             
             // Display current state, and ON/OFF buttons for GPIO 26  
             client.println("<p>GPIO 26 - State " + output26State + "</p>");
@@ -160,8 +162,7 @@ void loop(){
     header = "";
     // Close the connection
     client.stop();
-    Serial.println("Client disconnected.");
-    Serial.println("");
-    delay(100);
-  //}
+    //Serial.println("Client disconnected.");
+    //Serial.println("");
+  }
 }
