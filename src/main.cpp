@@ -2,14 +2,13 @@
 #include<Arduino.h>
 #include<WiFi.h>
 #include "RBCX.h"
-#include<ctime>
-#include <string>
- #include <sstream>
+#include<thread>
 
+auto& man = rb::Manager::get();
 // Replace with your network credentials
 const char* ssid = "Udesjede";
 const char* password = "tvojemama";
-
+bool encoderaviable = false;
 // Set web server port number to 80
 WiFiServer server(80);
 
@@ -31,42 +30,11 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0; 
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
-
-void setup() {
-  auto& man = rb::Manager::get(); // get manager instance as singleton
-  man.install(); // install manager
-  Serial.begin(115200);
-  // Initialize the output variables as outputs
-  pinMode(output26, OUTPUT);
-  pinMode(output27, OUTPUT);
-  // Set outputs to LOW
-  digitalWrite(output26, LOW);
-  digitalWrite(output27, LOW);
-
-
-
-
-
-  // Connect to Wi-Fi network with SSID and password
-  //Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    //Serial.print(".");
-  }
-  // Print local IP address and start web server
-  //Serial.println("");
-  //Serial.println("WiFi connected.");
-  //Serial.println("IP address: ");
-  //Serial.println(WiFi.localIP());
-  server.begin();
-}
-
-void loop(){
-  auto& man = rb::Manager::get();
-  WiFiClient client = server.available();   // Listen for incoming clients
-  
+int enc_data = 0;
+void funkce(){
+  while (true)
+  {
+  WiFiClient client = server.available();   // Listen for incoming clients 
  if (client) {                             // If a new client connects,
     currentTime = millis();
     previousTime = currentTime;
@@ -88,25 +56,6 @@ void loop(){
             client.println("Content-type:text/html");
             client.println("Connection: close");
             client.println();
-            
-            // turns the GPIOs on and off
-            if (header.indexOf("GET /26/on") >= 0) {
-              Serial.println("GPIO 26 on");
-              output26State = "on";
-              man.leds().yellow(true);//digitalWrite(output26, HIGH);
-            } else if (header.indexOf("GET /26/off") >= 0) {
-              Serial.println("GPIO 26 off");
-              man.leds().yellow(false);//digitalWrite(output26, LOW);
-              output26State = "off";
-            } else if (header.indexOf("GET /27/on") >= 0) {
-              Serial.println("GPIO 27 on");
-              output27State = "on";
-              digitalWrite(output27, HIGH);
-            } else if (header.indexOf("GET /27/off") >= 0) {
-              Serial.println("GPIO 27 off");
-              output27State = "off";
-              digitalWrite(output27, LOW);
-            }
             // Display the HTML web page
             client.println("<!DOCTYPE html><html>");
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
@@ -117,35 +66,22 @@ void loop(){
             client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
             client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
             client.println(".button2 {background-color: #555555;}</style></head>");
-            //double duration = double(end - start) / CLOCKS_PER_SEC;
-            String myString = "55";
             // Web Page Heading
             client.println("<body style='background-color: lightgray;'>");
             client.println("<body><h1>Udes Web Server</h1>");
-            client.println("<meta http-equiv='refresh' content='0.5'>");
-            const auto& bat = man.battery();
-
-            client.println("<body><h1>battery voltage:" + String(bat.voltageMv()) + " mV</h1>");
             
-            // Display current state, and ON/OFF buttons for GPIO 26  
-            client.println("<p>GPIO 26 - State " + output26State + "</p>");
-            // If the output26State is off, it displays the ON button       
-            if (output26State=="off") {
-              client.println("<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
-            } 
-               
-            // Display current state, and ON/OFF buttons for GPIO 27  
-            client.println("<p>GPIO 27 - State " + output27State + "</p>");
-            // If the output27State is off, it displays the ON button       
-            if (output27State=="off") {
-              client.println("<p><a href=\"/27/on\"><button class=\"button\">ON</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/27/off\"><button class=\"button button2\">OFF</button></a></p>");
+              client.println("<meta http-equiv='refresh' content='0.2'>");
+            
+            
+            const auto& bat = man.battery();
+            client.println("<h1>battery voltage:" + String(bat.voltageMv()) + " mV</h1>");
+            if(encoderaviable == true){
+              client.println("<h1>enc data:" + String(enc_data) + " mV</h1>");
+            }
+            else{
+              client.println("<h1>enc data:" + String(enc_data) + " mV</h1>");
             }
             client.println("</body></html>");
-            
             // The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
@@ -162,7 +98,53 @@ void loop(){
     header = "";
     // Close the connection
     client.stop();
-    //Serial.println("Client disconnected.");
-    //Serial.println("");
   }
+  }
+}
+void setup() {
+  auto& man = rb::Manager::get(); // get manager instance as singleton
+  man.install(); // install manager
+  Serial.begin(115200);
+  // Initialize the output variables as outputs
+
+
+
+
+
+
+  // Connect to Wi-Fi network with SSID and password
+  //Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    //Serial.print(".");
+  }
+  // Print local IP address and start web server
+  //Serial.println("");
+  //Serial.println("WiFi connected.");
+  //Serial.println("IP address: ");
+  //Serial.println(WiFi.localIP());
+  server.begin();
+  std::thread t1(funkce);
+  for(int i =0; i < 100;i++){
+    if(i==25){
+      encoderaviable=true;
+      enc_data = 69;
+      delay(1);
+      encoderaviable = false;
+    }
+     if(i==35){
+      encoderaviable=true;
+      enc_data = 420;
+      delay(1);
+      encoderaviable = false;
+    }
+    Serial.println(i);
+    delay(1000);
+  }
+}
+
+void loop(){
+  
 }
