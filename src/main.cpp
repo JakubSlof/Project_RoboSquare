@@ -14,7 +14,7 @@ WiFiServer server(80);
 
 // Variable to store the HTTP request
 String header;
-
+//goofy test 3333
 // Auxiliar variables to store the current output state
 String output26State = "off";
 String output27State = "off";
