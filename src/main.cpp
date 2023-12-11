@@ -3,7 +3,7 @@
 #include<WiFi.h>
 #include "RBCX.h"
 #include<thread>
-////////////////////ted cdcdc
+
 auto& man = rb::Manager::get();
 // Replace with your network credentials
 const char* ssid = "Udesjede";
@@ -23,7 +23,7 @@ String output27State = "off";
 // Assign output variables to GPIO pins
 const int output26 = 26;
 const int output27 = 27;
-//jedbjifbv
+
 // Current time
 unsigned long currentTime = millis();
 // Previous time
