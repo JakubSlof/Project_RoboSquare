@@ -23,7 +23,7 @@ String output27State = "off";
 // Assign output variables to GPIO pins
 const int output26 = 26;
 const int output27 = 27;
-
+//jedbjifbv
 // Current time
 unsigned long currentTime = millis();
 // Previous time
