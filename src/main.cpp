@@ -19,7 +19,7 @@ String header;
 String output26State = "off";
 String output27State = "off";
 
-
+//sjkdfjksdbjbbidjbdf
 // Assign output variables to GPIO pins
 const int output26 = 26;
 const int output27 = 27;
