@@ -3,7 +3,7 @@
 #include<WiFi.h>
 #include "RBCX.h"
 #include<thread>
-
+////////////////////ted cdcdc
 auto& man = rb::Manager::get();
 // Replace with your network credentials
 const char* ssid = "Udesjede";
