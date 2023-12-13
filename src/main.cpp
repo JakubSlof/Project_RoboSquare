@@ -20,7 +20,7 @@ void UpdateLastTicks(){
   //update global variables
   last_ticks_M1 = ticks_M1;
   last_ticks_M4 = ticks_M4;
-  //////////////////////////////
+  //////////////////////////
   Serial.print("lastticksM1:");
   Serial.println(last_ticks_M1);
   Serial.print("lastticksM4:");
@@ -141,11 +141,7 @@ void setup() {
   Straight(3200, 150,true);
   arc_left(150, 150);
   Straight(3200, 1000,true);
-  // arc_left(180,200);
-  // delay(100);
-  // UpdateLastTicks();
-  
-  //Serial.println("done 2");
+
 
 }
 
