@@ -2,7 +2,7 @@
 #include"RBCX.h"
 auto& man = rb::Manager::get(); //needs to be there to work man.sometning
 
-double tics_to_mm = 0.106;
+double tics_to_mm = 0.104;
 int wheel_base = 170;
 int last_ticks_M4 = 0;
 int last_ticks_M1 = 0;
@@ -15,17 +15,16 @@ int last_ticks_M1 = 0;
 void UpdateLastTicks(){
   int ticks_M1 = 0;
   int ticks_M4 = 0;
-  man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
-            //printf("M1: position:%d\n", info.position());
-            ticks_M1 = info.position();
-        });
-  man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
-            //printf("M4: position:%d\n", info.position());
-            ticks_M4 = info.position();
-        });
+        ticks_M4 = man.motor(rb::MotorId::M4).position();
+        ticks_M1 = man.motor(rb::MotorId::M1).position();
   //update global variables
   last_ticks_M1 = ticks_M1;
   last_ticks_M4 = ticks_M4;
+  //////////////////////////////
+  Serial.print("lastticksM1:");
+  Serial.println(last_ticks_M1);
+  Serial.print("lastticksM4:");
+  Serial.println(last_ticks_M4);
 }
 void arc_right(int angle, int radius){
    auto& man = rb::Manager::get(); 
@@ -42,18 +41,46 @@ void arc_right(int angle, int radius){
        man.motor(rb::MotorId::M1).speed(outer_sped);
        man.motor(rb::MotorId::M4).speed(inner_speed);
        man.motor(rb::MotorId::M1).requestInfo([&tics_M1](rb::Motor& info) {
-            printf("M1: position:%d\n", info.position());
+            //printf("M1: position:%d\n", info.position());
             tics_M1 = info.position()-last_ticks_M1;
         });
         man.motor(rb::MotorId::M4).requestInfo([&tics_M4](rb::Motor& info) {
-            printf("M4: position:%d\n", info.position());
+            //printf("M4: position:%d\n", info.position());
             tics_M4 = info.position()-last_ticks_M4;
         });
-        delay(1);
+        delay(10);
        }
        man.motor(rb::MotorId::M1).speed(0);
        man.motor(rb::MotorId::M4).speed(0);
        UpdateLastTicks();
+}
+void Straight(int speed, int distance){
+  double acceleration = 0.8;
+  auto& man = rb::Manager::get(); 
+   int ticks_M1 = 0;
+   int ticks_M4 = 0;
+   distance = distance / tics_to_mm;     
+  while((ticks_M1 < distance) && (ticks_M4 < distance)){
+    if(acceleration<100){
+    acceleration = acceleration + 0.01;}
+
+    man.motor(rb::MotorId::M1).speed(speed*acceleration);
+    man.motor(rb::MotorId::M4).speed(-speed*acceleration);
+
+    man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
+            printf("M4: position:%d\n", info.position());
+            ticks_M4 = info.position()-last_ticks_M4;
+        });
+        man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
+            printf("M1: position:%d\n", info.position());
+            ticks_M1 = info.position()-last_ticks_M1;
+        });
+    delay(10);
+  }
+
+  man.motor(rb::MotorId::M1).speed(0);
+  man.motor(rb::MotorId::M4).speed(0);
+  UpdateLastTicks();
 }
 
 /**
@@ -79,14 +106,14 @@ void arc_left(int angle, int radius){
        man.motor(rb::MotorId::M4).speed(outer_sped);
        man.motor(rb::MotorId::M1).speed(inner_speed);
        man.motor(rb::MotorId::M4).requestInfo([&tics_M4](rb::Motor& info) {
-            printf("M4: position:%d\n", info.position());
+            //printf("M4: position:%d\n", info.position());
             tics_M4 = info.position()-last_ticks_M4;
         });
         man.motor(rb::MotorId::M1).requestInfo([&tics_M1](rb::Motor& info) {
-            printf("M1: position:%d\n", info.position());
+            //printf("M1: position:%d\n", info.position());
             tics_M1 = info.position()-last_ticks_M1;
         });
-        delay(1);
+        delay(10);
        }
        man.motor(rb::MotorId::M1).speed(0);
        man.motor(rb::MotorId::M4).speed(0);
@@ -98,20 +125,21 @@ void arc_left(int angle, int radius){
 void setup() {
   // Get the manager instance as a singleton
   auto& man = rb::Manager::get();
-  
   // Install the manager
   man.install();
   
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
+  Straight(3200, 500);
+  arc_right(170, 150);
+  Straight(3200, 150);
+  arc_left(150, 150);
+  Straight(3200, 1000);
+  // arc_left(180,200);
+  // delay(100);
+  // UpdateLastTicks();
   
-  arc_right(180, 100);
-  Serial.println(last_ticks_M1);
-  Serial.println(last_ticks_M4);
-  delay(5000);
-  arc_left(180, 100);
-  Serial.println(last_ticks_M1);
-  Serial.println(last_ticks_M4);
+  //Serial.println("done 2");
 
 }
 
