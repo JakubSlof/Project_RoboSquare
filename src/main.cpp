@@ -1,6 +1,7 @@
 #include<thread>
 #include<Arduino.h>
 #include"RBCX.h"
+/////////////////////////////////////////
 void measuring(){
    auto& man = rb::Manager::get(); //this needs to be there
    while(true){
