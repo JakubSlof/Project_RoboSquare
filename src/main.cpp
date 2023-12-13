@@ -67,9 +67,8 @@ void Straight(int speed, int distance,bool deceleration_enabled){
   while((ticks_M1 < distance) && (ticks_M4 < distance)){
     if(acceleration<1){
     acceleration = acceleration + 0.02;}
-    if(deceleration_enabled == true && (ticks_M1 > (distance-deceleration_distance)) && (ticks_M4 > (distance-deceleration_distance))&&deceleration<1){
+    if(deceleration_enabled == true && (ticks_M1 > (distance-deceleration_distance)) && (ticks_M4 > (distance-deceleration_distance))&&deceleration<1&&deceleration>0.2){
       deceleration = deceleration - 0.05;
-    
    }
     man.motor(rb::MotorId::M1).speed(speed*acceleration*deceleration);
     man.motor(rb::MotorId::M4).speed(-speed*acceleration*deceleration);
