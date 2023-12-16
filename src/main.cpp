@@ -125,9 +125,42 @@ void arc_left(int angle, int radius){
        man.motor(rb::MotorId::M4).speed(0);
        UpdateLastTicks();
 } 
-
-
-
+/**
+ * Increase the speed of two motors gradually from a starting speed to a target speed over a given distance.
+ * Allsow works for decelaration.
+ * Warning this functions ignores any phisics!!!!!!
+ * @param speed_from The starting speed of the motors (in arbitrary units).
+ * @param speed_to The target speed of the motors (in arbitrary units).
+ * @param distance_mm The distance over which the speed should be increased (in millimeters).
+ */
+void Acceleration(int speed_from, int speed_to, int distance_mm){
+  man.motor(rb::MotorId::M1).setCurrentPosition(0);
+  man.motor(rb::MotorId::M4).setCurrentPosition(0);
+  int distance = distance_mm / mm_to_ticks;
+  int speed_diff = speed_to - speed_from;
+  int acceleration = distance / speed_diff;
+  int ticks_M1 = 0;
+  int ticks_M4 = 0;
+  int last_ticks_M1 = 0;
+  int last_ticks_M4 = 0;
+  int speed = speed_from;
+  while ((ticks_M1 < distance) && (ticks_M4 < distance))
+  {
+    if(ticks_M1 > last_ticks_M1 && ticks_M4 > last_ticks_M4){
+      speed = speed + acceleration; 
+    }
+    man.motor(rb::MotorId::M1).speed(speed);
+    man.motor(rb::MotorId::M4).speed(speed);
+    ticks_M1 = man.motor(rb::MotorId::M1).position();
+    last_ticks_M1 = ticks_M1;
+    ticks_M4 = man.motor(rb::MotorId::M4).position();
+    last_ticks_M4 = ticks_M4;
+    delay(10);//may be smaller who knows ?
+  }
+    man.motor(rb::MotorId::M1).speed(0);
+    man.motor(rb::MotorId::M4).speed(0);
+    //test
+}
 void setup() {
   // Get the manager instance as a singleton
   auto& man = rb::Manager::get();
