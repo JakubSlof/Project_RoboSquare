@@ -127,7 +127,6 @@ void arc_left(int angle, int radius){
 } 
 /**
  * Increase the speed of two motors gradually from a starting speed to a target speed over a given distance.
- * Allsow works for decelaration.
  * Warning this functions ignores any phisics!!!!!!
  * @param speed_from The starting speed of the motors (in arbitrary units).
  * @param speed_to The target speed of the motors (in arbitrary units).
@@ -146,7 +145,7 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
   int speed = speed_from;
   while ((ticks_M1 < distance) && (ticks_M4 < distance))
   {
-    if(ticks_M1 > last_ticks_M1 && ticks_M4 > last_ticks_M4){
+    if(ticks_M1 > last_ticks_M1 && ticks_M4 > last_ticks_M4 && speed < speed_to){
       speed = speed + acceleration; 
     }
     man.motor(rb::MotorId::M1).speed(speed);
