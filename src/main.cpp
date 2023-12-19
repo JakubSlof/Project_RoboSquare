@@ -145,7 +145,7 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
   int speed = speed_from;
   while ((ticks_M1 < distance) && (ticks_M4 < distance))
   {
-    if(ticks_M1 > last_ticks_M1 && ticks_M4 > last_ticks_M4 && speed < speed_to){
+    if(ticks_M1 > last_ticks_M1 && ticks_M4 > last_ticks_M4 && speed){
       speed = speed + acceleration; 
     }
     man.motor(rb::MotorId::M1).speed(speed);
