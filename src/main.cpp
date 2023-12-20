@@ -44,8 +44,6 @@ void Straight(int speed, int distance){
    int ticks_M4 = 0;
    distance = distance / mm_to_ticks;
   while((ticks_M1 < distance) && (ticks_M4 < distance)){
-
-
     man.motor(rb::MotorId::M1).speed(speed);
     man.motor(rb::MotorId::M4).speed(-speed);
 
@@ -59,11 +57,9 @@ void Straight(int speed, int distance){
         });
     delay(10);
   }
-
   man.motor(rb::MotorId::M1).speed(0);
   man.motor(rb::MotorId::M4).speed(0);
 }
-
 /**
  * Controls the movement of a robot in an arc to the right.
  * 
@@ -113,18 +109,24 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
   man.motor(rb::MotorId::M4).setCurrentPosition(0);
   double distance = distance_mm / mm_to_ticks;
   int speed_diff = speed_to - speed_from;
-  double acceleration = distance / speed_diff;
+  double acceleration =   speed_diff/distance;
+  Serial.println(acceleration);
   int ticks_M1 = 0;
   int ticks_M4 = 0;
-  int last_ticks_M1 = 0;
-  int last_ticks_M4 = 0;
+  int last_ticks_M1 = 1;
+  int last_ticks_M4 = 1;
   double speed = speed_from;
-  while ((ticks_M1 < distance) && (ticks_M4 < distance))
-  {
-    if(ticks_M1 > last_ticks_M1){
+  //deceleration
+  if(speed_from > speed_to){
+    Serial.println("deceleration started");
+    while ((ticks_M1 < distance) && (ticks_M4 < distance)){
+      Serial.println("shydfbyefb");
+
+    if(ticks_M1 > last_ticks_M1 && -ticks_M4 > -last_ticks_M4){
       last_ticks_M1 = ticks_M1;
       last_ticks_M4 = ticks_M4;
-      speed = speed * (acceleration+1); 
+      speed = speed + acceleration; 
+      Serial.println(speed);
     }
     man.motor(rb::MotorId::M1).speed(speed);
     man.motor(rb::MotorId::M4).speed(-speed);
@@ -138,8 +140,31 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
         });
     delay(100);//do not change
   }
-    man.motor(rb::MotorId::M1).speed(0);
-    man.motor(rb::MotorId::M4).speed(0);
+ man.motor(rb::MotorId::M1).speed(0);
+man.motor(rb::MotorId::M4).speed(0);
+
+  }
+if(speed_from<speed_to){
+  while ((ticks_M1 < distance) && (ticks_M4 < distance))
+  {
+    if(ticks_M1 > last_ticks_M1 && -ticks_M4 > -last_ticks_M4){
+      last_ticks_M1 = ticks_M1;
+      last_ticks_M4 = ticks_M4;
+      speed = speed + acceleration; 
+    }
+    man.motor(rb::MotorId::M1).speed(speed);
+    man.motor(rb::MotorId::M4).speed(-speed);
+    man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
+            //printf("M4: position:%d\n", info.position());
+            ticks_M4 = info.position();
+        });
+    man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
+            //printf("M4: position:%d\n", info.position());
+            ticks_M1 = info.position();
+        });
+    delay(100);//do not change
+  }
+  }
 }
 void setup() {
   // Get the manager instance as a singleton
@@ -149,13 +174,14 @@ void setup() {
   
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
-  Straight(3200, 500);
-  arc_right(170, 150);
-  Straight(3200, 150);
-  arc_left(150, 150);
-  Straight(3200, 1000);
-//Acceleration(100,3200,200);
-//Acceleration(3200,0,100);
+  // Straight(3200, 500);
+  // arc_right(170, 150);
+  // Straight(3200, 150);
+  // arc_left(150, 150);
+  // Straight(3200, 1000);
+Acceleration(100,3200,200);
+Straight(3200,300);
+Acceleration(3200,100,200);
 
 }
 
