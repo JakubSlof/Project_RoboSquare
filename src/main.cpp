@@ -86,7 +86,7 @@ void arc_left(int angle, int radius){
        man.motor(rb::MotorId::M1).speed(inner_speed);
        man.motor(rb::MotorId::M4).requestInfo([&tics_M4](rb::Motor& info) {
             //printf("M4: position:%d\n", info.position());
-            tics_M4 = info.position()-last_ticks_M4;
+            tics_M4 = info.position();
         });
         man.motor(rb::MotorId::M1).requestInfo([&tics_M1](rb::Motor& info) {
             //printf("M1: position:%d\n", info.position());
@@ -97,74 +97,24 @@ void arc_left(int angle, int radius){
        man.motor(rb::MotorId::M1).speed(0);
        man.motor(rb::MotorId::M4).speed(0);
 } 
-/**
- * Increase the speed of two motors gradually from a starting speed to a target speed over a given distance.
- * Warning this functions ignores any phisics!!!!!!
- * @param speed_from The starting speed of the motors (in arbitrary units).
- * @param speed_to The target speed of the motors (in arbitrary units).
- * @param distance_mm The distance over which the speed should be increased (in millimeters).
- */
+//test????
 void Acceleration(int speed_from, int speed_to, int distance_mm){
-  man.motor(rb::MotorId::M1).setCurrentPosition(0);
-  man.motor(rb::MotorId::M4).setCurrentPosition(0);
-  double distance = distance_mm / mm_to_ticks;
-  int speed_diff = speed_to - speed_from;
-  double acceleration =   speed_diff/distance;
-  Serial.println(acceleration);
-  int ticks_M1 = 0;
-  int ticks_M4 = 0;
-  int last_ticks_M1 = 1;
-  int last_ticks_M4 = 1;
-  double speed = speed_from;
-  //deceleration
-  if(speed_from > speed_to){
-    Serial.println("deceleration started");
-    while ((ticks_M1 < distance) && (ticks_M4 < distance)){
-      Serial.println("shydfbyefb");
-
-    if(ticks_M1 > last_ticks_M1 && -ticks_M4 > -last_ticks_M4){
-      last_ticks_M1 = ticks_M1;
-      last_ticks_M4 = ticks_M4;
-      speed = speed + acceleration; 
-      Serial.println(speed);
-    }
-    man.motor(rb::MotorId::M1).speed(speed);
-    man.motor(rb::MotorId::M4).speed(-speed);
-    man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
+     double distance_ticks = distance_mm / mm_to_ticks;
+     int ticks_M1 = 0;
+     int ticks_M4 = 0;
+     while((ticks_M1 < distance_ticks) && (ticks_M4 < distance_ticks)){
+        man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
             //printf("M4: position:%d\n", info.position());
             ticks_M4 = info.position();
         });
-    man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
-            //printf("M4: position:%d\n", info.position());
+        man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
+            //printf("M1: position:%d\n", info.position());
             ticks_M1 = info.position();
         });
-    delay(100);//do not change
-  }
- man.motor(rb::MotorId::M1).speed(0);
-man.motor(rb::MotorId::M4).speed(0);
-
-  }
-if(speed_from<speed_to){
-  while ((ticks_M1 < distance) && (ticks_M4 < distance))
-  {
-    if(ticks_M1 > last_ticks_M1 && -ticks_M4 > -last_ticks_M4){
-      last_ticks_M1 = ticks_M1;
-      last_ticks_M4 = ticks_M4;
-      speed = speed + acceleration; 
-    }
-    man.motor(rb::MotorId::M1).speed(speed);
-    man.motor(rb::MotorId::M4).speed(-speed);
-    man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
-            //printf("M4: position:%d\n", info.position());
-            ticks_M4 = info.position();
-        });
-    man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
-            //printf("M4: position:%d\n", info.position());
-            ticks_M1 = info.position();
-        });
-    delay(100);//do not change
-  }
-  }
+       man.motor(rb::MotorId::M4).speed(((speed_to*ticks_M4)/distance_ticks)+speed_from);
+       man.motor(rb::MotorId::M1).speed(((speed_to*ticks_M1)/distance_ticks)+speed_from);
+      delay(10);
+     }
 }
 void setup() {
   // Get the manager instance as a singleton
