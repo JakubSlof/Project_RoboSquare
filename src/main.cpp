@@ -100,6 +100,7 @@ void arc_left(int angle, int radius){
 //test????
 void Acceleration(int speed_from, int speed_to, int distance_mm){
      double distance_ticks = distance_mm / mm_to_ticks;
+     double acc_const = speed_to/distance_ticks;
      int ticks_M1 = 0;
      int ticks_M4 = 0;
      while((ticks_M1 < distance_ticks) && (ticks_M4 < distance_ticks)){
@@ -111,8 +112,8 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
             //printf("M1: position:%d\n", info.position());
             ticks_M1 = info.position();
         });
-       man.motor(rb::MotorId::M4).speed(((speed_to*ticks_M4)/distance_ticks)+speed_from);
-       man.motor(rb::MotorId::M1).speed(((speed_to*ticks_M1)/distance_ticks)+speed_from);
+       man.motor(rb::MotorId::M4).speed(acc_const*ticks_M4+speed_from);
+       man.motor(rb::MotorId::M1).speed(acc_const*ticks_M1+speed_from);
       delay(10);
      }
 }
