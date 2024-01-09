@@ -7,6 +7,21 @@ int wheel_base = 170;
 int last_ticks_M4 = 0;
 int last_ticks_M1 = 0;
 
+
+struct klepeto
+{
+  int id = 4;
+  void move(){
+    //tady je kod co pohnek klepetem
+  }
+  int position(){
+    //returns position of klepeto
+    int position = 0;
+    return position;
+  }
+};
+
+
 void arc_right(int angle, int radius){
    man.motor(rb::MotorId::M1).setCurrentPosition(0);
    man.motor(rb::MotorId::M4).setCurrentPosition(0);
@@ -122,7 +137,7 @@ void setup() {
   auto& man = rb::Manager::get();
   // Install the manager
   man.install();
-  
+  struct klepeto Klepeto_L, Klepeto_R;
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
   // Straight(3200, 500);
@@ -133,7 +148,6 @@ void setup() {
 Acceleration(100,3200,200);
 Straight(3200,300);
 Acceleration(3200,100,200);
-
 }
 
 void loop(){
