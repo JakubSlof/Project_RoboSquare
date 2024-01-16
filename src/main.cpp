@@ -161,10 +161,14 @@ int M4 =0;
           M3 = info.position();
         });
         man.motor(rb::MotorId::M1).requestInfo([&M4](rb::Motor& info) {
-            //printf("M1: position:%d\n", info.position());
+            printf("M4: position:%d\n", info.position());
           M4 = info.position();
         });
   }
+      man.motor(rb::MotorId::M1).speed(0);
+      man.motor(rb::MotorId::M2).speed(0);
+      man.motor(rb::MotorId::M3).speed(0);
+      man.motor(rb::MotorId::M4).speed(0);
   
 
 }
