@@ -49,8 +49,8 @@ void arc_right(int angle, int radius){
         });
         delay(10);
        }
-       man.motor(rb::MotorId::M1).speed(0);
-       man.motor(rb::MotorId::M4).speed(0);
+       //man.motor(rb::MotorId::M1).speed(0);
+       //man.motor(rb::MotorId::M4).speed(0);
 }
 void Straight(int speed, int distance){
   auto& man = rb::Manager::get(); 
@@ -63,7 +63,6 @@ man.motor(rb::MotorId::M4).setCurrentPosition(0);
   while(ticks_M1 < distance){//(ticks_M1 < distance)&& (ticks_M4 < distance)
     man.motor(rb::MotorId::M1).speed(-speed);
     man.motor(rb::MotorId::M4).speed(speed);
-
     man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
             //Serial.println( info.position());
             ticks_M4 =  info.position();
@@ -75,8 +74,8 @@ man.motor(rb::MotorId::M4).setCurrentPosition(0);
 
     delay(10);
   }
-  man.motor(rb::MotorId::M1).speed(0);
-  man.motor(rb::MotorId::M4).speed(0);
+  //man.motor(rb::MotorId::M1).speed(0);
+  //man.motor(rb::MotorId::M4).speed(0);
   printf("niga");
 
 }
@@ -114,8 +113,8 @@ void arc_left(int angle, int radius){
         });
         delay(10);
        }
-       man.motor(rb::MotorId::M4).speed(0);
-       man.motor(rb::MotorId::M1).speed(0);
+       //man.motor(rb::MotorId::M4).speed(0);
+       //man.motor(rb::MotorId::M1).speed(0);
       
 } 
 //test????
@@ -126,8 +125,8 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
      int ticks_M1 = 0;
      int ticks_M4 = 0;
      while((ticks_M1 < distance_ticks) && (ticks_M4 < distance_ticks)){
-        man.motor(rb::MotorId::M4).speed(acc_const*ticks_M4+speed_from);
-        man.motor(rb::MotorId::M1).speed(-(acc_const*ticks_M1+speed_from));
+      man.motor(rb::MotorId::M1).speed(-(acc_const*ticks_M1+speed_from));
+        man.motor(rb::MotorId::M4).speed(acc_const*ticks_M4+speed_from); 
         man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
             //printf("M4: position:%d\n", info.position());
             ticks_M4 = info.position();
@@ -160,18 +159,37 @@ void setup() {
   //struct klepeto Klepeto_L, Klepeto_R;
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
+  //starting button
+  while (true)
+  {
+    if (man.buttons().up()==1)
+    {
+      break;
+    }
+    
+    delay(10);
+  }
+  delay(500);
+
+  //esko
+  Acceleration(1000,20000,450);
+  arc_right(150, 180);
+  Straight(20000, 200);
+  arc_left(140, 200);
+  Straight(32000, 500);
+
+  /////////////////////////////////////////////////////////////////////////////////////
   //measuring();
   //test();
   //delay(10000);
-  Straight(1000, 2000);
-  
+  //Straight(1000, 2000);
   //man.stupidServo(0).setPosition(1);
-  //arc_right(1200, 150);
+  //
  // Serial.println("hovno");
-  //Straight(3200, 150);
-  //arc_left(150, 150);
-  //Straight(3200, 1000);
-//Acceleration(100,32000,500);
+  //
+  //
+  //
+
 //Straight(3200,300);
 //Acceleration(3200,100,200);
 // while (true) {
