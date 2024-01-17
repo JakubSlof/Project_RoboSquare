@@ -54,29 +54,30 @@ void arc_right(int angle, int radius){
 }
 void Straight(int speed, int distance){
   auto& man = rb::Manager::get(); 
-  man.motor(rb::MotorId::M1).setCurrentPosition(0);
-  man.motor(rb::MotorId::M4).setCurrentPosition(0);
+man.motor(rb::MotorId::M1).setCurrentPosition(0);
+man.motor(rb::MotorId::M4).setCurrentPosition(0);
    int ticks_M1 = 0;
    int ticks_M4 = 0;
-   distance = distance / mm_to_ticks;
-  while((-ticks_M1 < distance) && (-ticks_M4 < distance)){
-    man.motor(rb::MotorId::M1).speed(speed);
-    man.motor(rb::MotorId::M4).speed(-speed);
+   distance = distance*104;
+   Serial.println(distance);
+  while(ticks_M1 < distance){//(ticks_M1 < distance)&& (ticks_M4 < distance)
+    man.motor(rb::MotorId::M1).speed(-speed);
+    man.motor(rb::MotorId::M4).speed(speed);
+
     man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
-            printf("M4: position:%d\n", info.position());
+            //Serial.println( info.position());
             ticks_M4 =  info.position();
         });
         man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
-            printf("M1: position:%d\n", info.position());
-            ticks_M1 =  info.position();
+            //Serial.println( -info.position());
+            ticks_M1 =   -info.position();
         });
-    delay(1);
+
+    delay(10);
   }
   man.motor(rb::MotorId::M1).speed(0);
   man.motor(rb::MotorId::M4).speed(0);
-
-
-
+  printf("niga");
 
 }
 /**
@@ -137,52 +138,21 @@ void Acceleration(int speed_from, int speed_to, int distance_mm){
       delay(10);
      }
 }
-void test(){
-int M1 =0;
-int M2 =0;
-int M3 =0;
-int M4 =0;
-  while ((M1 < 5000 || M1 > -5000) & (M2 < 5000 || M2 > -5000) & (M3 < 5000 || M3 > -5000) & (M4 < 5000 || M4 > -5000) )
-  { 
-      man.motor(rb::MotorId::M1).speed(10000);
-      man.motor(rb::MotorId::M2).speed(10000);
-      man.motor(rb::MotorId::M3).speed(10000);
-      man.motor(rb::MotorId::M4).speed(10000);
-      man.motor(rb::MotorId::M1).requestInfo([&M1](rb::Motor& info) {
-            printf("M1: position:%d\n", info.position());
-            M1 = info.position();
-        });
-        man.motor(rb::MotorId::M1).requestInfo([&M2](rb::Motor& info) {
-          printf("M2: position:%d\n", info.position());
-            M2 = info.position();
-        });
-    man.motor(rb::MotorId::M4).requestInfo([&M3](rb::Motor& info) {
-            printf("M3: position:%d\n", info.position());
-          M3 = info.position();
-        });
-        man.motor(rb::MotorId::M1).requestInfo([&M4](rb::Motor& info) {
-            printf("M4: position:%d\n", info.position());
-          M4 = info.position();
-        });
-  }
-      man.motor(rb::MotorId::M1).speed(0);
-      man.motor(rb::MotorId::M2).speed(0);
-      man.motor(rb::MotorId::M3).speed(0);
-      man.motor(rb::MotorId::M4).speed(0);
-  
-
-}
 void setup() {
   // Get the manager instance as a singleton
   auto& man = rb::Manager::get();
   // Install the manager
   man.install();
-  struct klepeto Klepeto_L, Klepeto_R;
+  //struct klepeto Klepeto_L, Klepeto_R;
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
-  Straight(10000, 500);
+  //test();
+  //delay(10000);
+  //Straight(30000, 200);
+  
   //man.stupidServo(0).setPosition(1);
-  //arc_right(170, 150);
+  arc_right(170, 150);
+  Serial.println("hovno");
   //Straight(3200, 150);
   //arc_left(150, 150);
   //Straight(3200, 1000);
