@@ -120,13 +120,17 @@ void arc_left(int angle, int radius){
 //test????
 //needs to start from at least 100 speed_from!!!!!
 void Acceleration(int speed_from, int speed_to, int distance_mm){
+  man.motor(rb::MotorId::M1).setCurrentPosition(0);
+man.motor(rb::MotorId::M4).setCurrentPosition(0);
      double distance_ticks = distance_mm / mm_to_ticks;
      double acc_const = speed_to/distance_ticks;
      int ticks_M1 = 0;
      int ticks_M4 = 0;
+     int error = 0;
      while((ticks_M1 < distance_ticks) && (ticks_M4 < distance_ticks)){
-      man.motor(rb::MotorId::M1).speed(-(acc_const*ticks_M1+speed_from));
-        man.motor(rb::MotorId::M4).speed(acc_const*ticks_M4+speed_from); 
+      error = 10*(ticks_M1 - ticks_M4);
+      man.motor(rb::MotorId::M1).speed(-(acc_const*ticks_M1+speed_from-error));
+        man.motor(rb::MotorId::M4).speed(acc_const*ticks_M4+speed_from+error); 
         man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
             //printf("M4: position:%d\n", info.position());
             ticks_M4 = info.position();
@@ -159,6 +163,7 @@ void setup() {
   //struct klepeto Klepeto_L, Klepeto_R;
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
+  Serial.println(man.battery().voltageMv());
   //starting button
   while (true)
   {
@@ -171,11 +176,14 @@ void setup() {
   }
   delay(500);
 
+//functions in testing
+
+//Straight(3200, 1000);
   //esko
-  Acceleration(1000,20000,450);
+  Acceleration(500,32000,450);
   arc_right(150, 180);
-  Straight(20000, 200);
-  arc_left(140, 200);
+  Straight(32000, 200);
+  arc_left(150, 200);
   Straight(32000, 500);
 
   /////////////////////////////////////////////////////////////////////////////////////
