@@ -21,6 +21,26 @@ struct klepeto
     return position;
   }
 };
+struct arm
+{
+  void Drivemode(){
+    //puts the arm in drive mode
+    //stupid servos position is from<-2;2>
+    man.stupidServo(0).setPosition(0);
+    man.stupidServo(1).setPosition(2); //or -2 needs to be tested
+    man.stupidServo(2).setPosition(2); //or -2 needs to be tested
+  }
+  void GrabBaterry(){
+    man.stupidServo(0).setPosition(2);
+    man.stupidServo(1).setPosition(0.5); //just random needs to be tested
+    man.stupidServo(2).setPosition(0);
+  }
+  void ReleaseBattery() {
+    man.stupidServo(0).setPosition(-2);
+    man.stupidServo(1).setPosition(1); //just random needs to be tested
+    man.stupidServo(2).setPosition(2);//or -2 needs to be tested
+  }
+};
 
 
 void arc_right(int angle, int radius){
@@ -160,7 +180,9 @@ void setup() {
   auto& man = rb::Manager::get();
   // Install the manager
   man.install();
-  //struct klepeto Klepeto_L, Klepeto_R;
+  struct klepeto Klepeto_L, Klepeto_R;
+  struct arm arm;
+  
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
   Serial.println(man.battery().voltageMv());
@@ -177,6 +199,8 @@ void setup() {
   delay(500);
 
 //functions in testing
+arm.Drivemode();
+delay(500);
 
 //Straight(3200, 1000);
   //esko
@@ -184,7 +208,11 @@ void setup() {
   arc_right(150, 180);
   Straight(32000, 200);
   arc_left(150, 200);
-  Straight(32000, 500);
+  Straight(32000, 400);
+  Acceleration(32000,0,100);
+  man.motor(rb::MotorId::M4).speed(0);
+  man.motor(rb::MotorId::M1).speed(0);
+
 
   /////////////////////////////////////////////////////////////////////////////////////
   //measuring();
