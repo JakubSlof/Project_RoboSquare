@@ -204,6 +204,8 @@ delay(500);
 
 //Straight(3200, 1000);
   //esko
+
+
   Acceleration(500,32000,450);
   arc_right(150, 180);
   Straight(32000, 200);
