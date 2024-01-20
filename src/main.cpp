@@ -4,7 +4,7 @@ auto& man = rb::Manager::get(); //needs to be there to work man.sometning
 //r motor 3
 // l motor 2
 double mm_to_ticks = 0.215;
-int wheel_base = 170;
+int wheel_base = 150;
 int last_ticks_M4 = 0;
 int last_ticks_M1 = 0;
 
@@ -175,6 +175,32 @@ void measuring(){
   }
   
 }
+void Turn (int angle){
+    man.motor(rb::MotorId::M1).setCurrentPosition(0);
+man.motor(rb::MotorId::M4).setCurrentPosition(0);
+  int ticks_M1 =0;
+  int ticks_M4=0;
+  int distance = ((PI*wheel_base)/360)*angle/mm_to_ticks;
+  while (distance > ticks_M4)
+  {
+        man.motor(rb::MotorId::M1).speed(1000);
+        man.motor(rb::MotorId::M4).speed(1000); 
+        man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor& info) {
+            //printf("M4: position:%d\n", info.position());
+            ticks_M4 = info.position();
+        });
+        man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor& info) {
+            //printf("M1: position:%d\n", info.position());
+            ticks_M1 = -info.position();
+        });
+
+      delay(10);
+  }
+  man.motor(rb::MotorId::M4).speed(0);
+  man.motor(rb::MotorId::M1).speed(0);
+
+  
+}
 void setup() {
   // Get the manager instance as a singleton
   auto& man = rb::Manager::get();
@@ -201,19 +227,63 @@ void setup() {
 //functions in testing
 arm.Drivemode();
 delay(500);
+//////////////////////////////////////////
 
+// arc_right(90,500);
+//  man.motor(rb::MotorId::M4).speed(0);
+//   man.motor(rb::MotorId::M1).speed(0);
+
+
+//   while (true)
+//   {
+//     if (man.buttons().up()==1)
+//     {
+//       break;
+//     }
+    
+//     delay(10);
+//   }
+//   delay(500);
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////
 //Straight(3200, 1000);
-  //esko
-
-
-  Acceleration(500,32000,450);
-  arc_right(150, 180);
-  Straight(32000, 200);
-  arc_left(150, 200);
-  Straight(32000, 400);
+  //esko == pos1
+  Acceleration(500,32000,400);
+  arc_right(180, 180);
+  //Straight(32000, 100);
+  arc_left(165, 200);
+  Straight(32000, 300);
   Acceleration(32000,0,100);
   man.motor(rb::MotorId::M4).speed(0);
   man.motor(rb::MotorId::M1).speed(0);
+  //go to pos2
+  delay(2000);
+  Acceleration(500,32000,400);
+  Acceleration(32000,500,400);
+  man.motor(rb::MotorId::M4).speed(0);
+  man.motor(rb::MotorId::M1).speed(0);
+  delay(100);
+  Turn(165);
+  delay(1000);
+  int i = 0;
+while (i<300)
+{
+  i=i+1;
+  man.motor(rb::MotorId::M4).speed(-500);
+  man.motor(rb::MotorId::M1).speed(500);
+  delay(10);
+}
+  man.motor(rb::MotorId::M4).speed(0);
+  man.motor(rb::MotorId::M1).speed(0);
+
 
 
   /////////////////////////////////////////////////////////////////////////////////////
