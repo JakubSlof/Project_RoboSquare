@@ -1,5 +1,9 @@
 #include<Arduino.h>
 #include"RBCX.h"
+#include "SmartServoBus.hpp"
+
+using namespace lx16a;
+static SmartServoBus servoBus;
 auto& man = rb::Manager::get(); //needs to be there to work man.sometning
 //r motor 3
 // l motor 2
@@ -212,6 +216,20 @@ void setup() {
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
   Serial.println(man.battery().voltageMv());
+  ///////////////////////////////////////////////
+  servoBus.begin(1, UART_NUM_1, GPIO_NUM_27);
+  servoBus.setId(0);
+    while (true) {
+        printf("GetId: %d\n", servoBus.getId());
+        delay(1000);
+    }
+
+
+
+
+
+
+//////////////////////////////
   //starting button
   while (true)
   {
@@ -228,10 +246,17 @@ void setup() {
 arm.Drivemode();
 delay(500);
 //////////////////////////////////////////
-
-// arc_right(90,500);
-//  man.motor(rb::MotorId::M4).speed(0);
-//   man.motor(rb::MotorId::M1).speed(0);
+// int distance;
+// while (true)
+// {
+//   distance = man.ultrasound(0).measure();
+//   Serial.println(distance);
+//   if (man.buttons().up()==1)
+//     {
+//       break;
+//     }
+//   delay(100);
+// }
 
 
 //   while (true)
@@ -256,7 +281,7 @@ delay(500);
 ////////////////////////////////////////
 //Straight(3200, 1000);
   //esko == pos1
-  Acceleration(500,32000,400);
+  Acceleration(300,32000,400); //default 500
   arc_right(180, 180);
   //Straight(32000, 100);
   arc_left(165, 200);
@@ -266,23 +291,35 @@ delay(500);
   man.motor(rb::MotorId::M1).speed(0);
   //go to pos2
   delay(2000);
-  Acceleration(500,32000,400);
-  Acceleration(32000,500,400);
-  man.motor(rb::MotorId::M4).speed(0);
-  man.motor(rb::MotorId::M1).speed(0);
-  delay(100);
-  Turn(165);
-  delay(1000);
-  int i = 0;
-while (i<300)
-{
-  i=i+1;
-  man.motor(rb::MotorId::M4).speed(-500);
-  man.motor(rb::MotorId::M1).speed(500);
-  delay(10);
-}
-  man.motor(rb::MotorId::M4).speed(0);
-  man.motor(rb::MotorId::M1).speed(0);
+  ////////////////
+  Turn(180);
+  Acceleration(1000,32000,100);
+  Straight(32000, 300);
+  arc_right(165, 200);
+  Straight(32000, 300);
+  arc_left(180, 180);
+  Straight(32000, 300);
+  
+
+
+  /////////////////////////////////////////
+//   Acceleration(500,32000,400);
+//   Acceleration(32000,500,400);
+//   man.motor(rb::MotorId::M4).speed(0);
+//   man.motor(rb::MotorId::M1).speed(0);
+//   delay(100);
+//   Turn(165);
+//   delay(1000);
+//   int i = 0;
+// while (i<300)
+// {
+//   i=i+1;
+//   man.motor(rb::MotorId::M4).speed(-500);
+//   man.motor(rb::MotorId::M1).speed(500);
+//    delay(10);
+// }
+//   man.motor(rb::MotorId::M4).speed(0);
+//   man.motor(rb::MotorId::M1).speed(0);
 
 
 
