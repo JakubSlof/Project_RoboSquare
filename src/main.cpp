@@ -1,9 +1,10 @@
 #include<Arduino.h>
-#include"RBCX.h"
 #include "SmartServoBus.hpp"
+#include"RBCX.h"
 
-using namespace lx16a;
-static SmartServoBus servoBus;
+
+
+static lx16a::SmartServoBus servoBus;
 auto& man = rb::Manager::get(); //needs to be there to work man.sometning
 //r motor 3
 // l motor 2
