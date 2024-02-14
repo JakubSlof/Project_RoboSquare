@@ -3,8 +3,8 @@
 #include"RBCX.h"
 
 
-
-static lx16a::SmartServoBus servoBus;
+using namespace lx16a;
+static SmartServoBus servoBus;
 auto& man = rb::Manager::get(); //needs to be there to work man.sometning
 //r motor 3
 // l motor 2
@@ -219,11 +219,9 @@ void setup() {
   Serial.println(man.battery().voltageMv());
   ///////////////////////////////////////////////
   servoBus.begin(1, UART_NUM_1, GPIO_NUM_27);
-  servoBus.setId(0);
-    while (true) {
-        printf("GetId: %d\n", servoBus.getId());
-        delay(1000);
-    }
+  servoBus.setAutoStop(0,true);
+  Serial.println(servoBus.pos(0).deg());
+  servoBus.set(0, 10_deg);
 
 
 
