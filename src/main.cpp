@@ -12,8 +12,11 @@ double mm_to_ticks = 0.215;
 int wheel_base = 150;
 int last_ticks_M4 = 0;
 int last_ticks_M1 = 0;
-
-
+//calculates angle for left klepeto
+Angle left_angle(Angle angle){
+  angle = 240_deg-angle;
+  return angle;
+}
 struct klepeto
 {
   int id = 4;
@@ -206,6 +209,17 @@ man.motor(rb::MotorId::M4).setCurrentPosition(0);
 
   
 }
+
+
+void klepeta_triangle(){
+  servoBus.set(1,left_angle(80_deg));
+  delay(1000);
+  servoBus.set(0,56_deg);
+  delay(1000);
+  servoBus.set(1,left_angle(56_deg));
+
+
+}
 void setup() {
   // Get the manager instance as a singleton
   auto& man = rb::Manager::get();
@@ -216,13 +230,45 @@ void setup() {
   
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
-  Serial.println(man.battery().voltageMv());
+  //Serial.println(man.battery().voltageMv());
   ///////////////////////////////////////////////
-  servoBus.begin(1, UART_NUM_1, GPIO_NUM_27);
-  servoBus.setAutoStop(0,true);
+    while (true)
+  {
+    if (man.buttons().up()==1)
+    {
+      break;
+    }
+    
+    delay(10);
+  }
+  delay(500);
+  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
+  servoBus.setAutoStop(0,false);
+  servoBus.setAutoStop(0,false);
   Serial.println(servoBus.pos(0).deg());
-  servoBus.set(0, 10_deg);
+  Serial.println(servoBus.pos(1).deg());
+klepeta_triangle();
+  
+  
+  //Serial.println(servoBus.pos(0).deg());
+  //Serial.println(servoBus.pos(1).deg());
+  // servoBus.set(0, 180_deg);
+  // servoBus.set(1, 180_deg);
+  // Serial.println(servoBus.pos(0).deg());
+  // Serial.println(servoBus.pos(1).deg());
 
+  
+//  Angle promena = 0_deg;
+//  servoBus.set(0, promena);
+//  //Angle angle = 2_deg;
+//   for(int i = 0; i<12;i++){
+//     servoBus.set(0, promena);
+//     Serial.println(servoBus.pos(0).deg());
+//     delay(200);
+    
+//     //promena = promena+angle;
+//   }
+ 
 
 
 
