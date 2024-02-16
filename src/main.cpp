@@ -233,8 +233,11 @@ struct klepeta
 
   void Move(klepeta_state state)
   {
+
     if (state == full_closed)
     {
+      servoBus.setAutoStop(0, true);
+      servoBus.setAutoStop(1, true);
       servoBus.set(1, left_angle(90_deg));
       delay(1000);//tested
       servoBus.set(0, 0_deg);
@@ -242,10 +245,13 @@ struct klepeta
       servoBus.set(1, left_angle(3_deg));
       last_state = full_closed;
     }
+    /////////////////////////////////////////
     if (state == triangle)
     {
       if (last_state == full_closed)
       {
+        servoBus.setAutoStop(0, false);
+        servoBus.setAutoStop(1, false);
         servoBus.set(1, left_angle(90_deg));
         delay(1000);
         servoBus.set(0, 56_deg);
@@ -255,14 +261,19 @@ struct klepeta
       }
       else
       {
+        servoBus.setAutoStop(0, true);
+        servoBus.setAutoStop(1, true);
         servoBus.set(1, left_angle(56_deg));
         servoBus.set(0, 56_deg);
         delay(1000);
       }
       last_state = triangle;
     }
+    /////////////////////////////////////////////////////
     if (state == open)
     {
+      servoBus.setAutoStop(0, false);
+      servoBus.setAutoStop(1, false);
       if (last_state == full_closed)
       {
         servoBus.set(1, left_angle(120_deg));
@@ -278,6 +289,7 @@ struct klepeta
       }
       last_state=open;
     }
+    ////////////////////////////////////////////////////
   }
 };
 
@@ -290,7 +302,10 @@ void setup()
   klepeto Klepeto_L, Klepeto_R;
   arm arm;
   klepeta klepeto;
-  
+  //for setting autostop parameters
+  SmartServoBus::AutoStopParams par;
+  par.max_diff_centideg = 1000;
+  par.max_diff_readings = 1;
 
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
@@ -307,16 +322,25 @@ void setup()
     delay(10);
   }
   delay(500);
-  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
+  servoBus.begin(1, UART_NUM_1, GPIO_NUM_27);
+  servoBus.setAutoStopParams(par);
   servoBus.setAutoStop(0, false);
-  servoBus.setAutoStop(0, false);
-  klepeto.Move(open);
-  Serial.println(klepeto.last_state);
+  //servoBus.setAutoStop(1, true);
+ // klepeto.Move(open);
+ // Serial.println(klepeto.last_state);
+
+
  
-klepeto.Move(triangle);
-Serial.println(klepeto.last_state);
-klepeto.Move(full_closed);
-Serial.println(klepeto.last_state);
+
+
+
+
+
+ 
+//klepeto.Move(triangle);
+//Serial.println(klepeto.last_state);
+//klepeto.Move(full_closed);
+//Serial.println(klepeto.last_state);
 
 
 
