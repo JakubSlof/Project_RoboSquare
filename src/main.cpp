@@ -250,8 +250,8 @@ struct klepeta
     {
       if (last_state == full_closed)
       {
-        servoBus.setAutoStop(0, false);
-        servoBus.setAutoStop(1, false);
+        servoBus.setAutoStop(0, true);
+        servoBus.setAutoStop(1, true);
         servoBus.set(1, left_angle(90_deg));
         delay(1000);
         servoBus.set(0, 56_deg);
@@ -263,9 +263,15 @@ struct klepeta
       {
         servoBus.setAutoStop(0, true);
         servoBus.setAutoStop(1, true);
+        for (int i = 0; i < 20; i++)
+        {
         servoBus.set(1, left_angle(56_deg));
         servoBus.set(0, 56_deg);
-        delay(1000);
+        delay(100);
+        }
+        
+        
+        delay(100);
       }
       last_state = triangle;
     }
@@ -322,25 +328,37 @@ void setup()
     delay(10);
   }
   delay(500);
-  servoBus.begin(1, UART_NUM_1, GPIO_NUM_27);
+  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
   servoBus.setAutoStopParams(par);
-  servoBus.setAutoStop(0, false);
+  //servoBus.setAutoStop(0, false);
   //servoBus.setAutoStop(1, true);
- // klepeto.Move(open);
+Acceleration(300, 32000, 400); // default 500
+  arc_right(180, 180);
+  // Straight(32000, 100);
+  arc_left(180, 180);
+  Straight(32000, 300);
+  Acceleration(32000, 0, 100);
+  man.motor(rb::MotorId::M4).speed(0);
+  man.motor(rb::MotorId::M1).speed(0);
+
+
+
+
+
+
+
+
+
+
+ klepeto.Move(open);
+ delay(1000);
+ Straight(1000,200);
  // Serial.println(klepeto.last_state);
-
-
- 
-
-
-
-
-
- 
-//klepeto.Move(triangle);
+klepeto.Move(triangle);
 //Serial.println(klepeto.last_state);
 //klepeto.Move(full_closed);
 //Serial.println(klepeto.last_state);
+Straight(1000,200);
 
 
 
