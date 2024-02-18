@@ -236,8 +236,8 @@ struct klepeta
 
     if (state == full_closed)
     {
-      servoBus.setAutoStop(0, true);
-      servoBus.setAutoStop(1, true);
+      servoBus.setAutoStop(0, false);
+      servoBus.setAutoStop(1, false);
       servoBus.set(1, left_angle(90_deg));
       delay(1000);//tested
       servoBus.set(0, 0_deg);
@@ -250,8 +250,8 @@ struct klepeta
     {
       if (last_state == full_closed)
       {
-        servoBus.setAutoStop(0, true);
-        servoBus.setAutoStop(1, true);
+        servoBus.setAutoStop(0, false);
+        servoBus.setAutoStop(1, false);
         servoBus.set(1, left_angle(90_deg));
         delay(1000);
         servoBus.set(0, 56_deg);
@@ -296,6 +296,9 @@ struct klepeta
       last_state=open;
     }
     ////////////////////////////////////////////////////
+
+
+
   }
 };
 
@@ -312,6 +315,7 @@ void setup()
   SmartServoBus::AutoStopParams par;
   par.max_diff_centideg = 1000;
   par.max_diff_readings = 1;
+
 
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
@@ -332,33 +336,20 @@ void setup()
   servoBus.setAutoStopParams(par);
   //servoBus.setAutoStop(0, false);
   //servoBus.setAutoStop(1, true);
-Acceleration(300, 32000, 400); // default 500
+  //klepeto.Move(full_closed);
+  delay(1000);
+  klepeto.Move(triangle);
+  Acceleration(300, 32000, 400); // default 500
   arc_right(180, 180);
-  // Straight(32000, 100);
-  arc_left(180, 180);
+  Straight(32000, 100);
+  servoBus.set(0,90_deg);
+  arc_left(160, 150);
+  servoBus.set(0,95_deg);
   Straight(32000, 300);
-  Acceleration(32000, 0, 100);
+  Acceleration(32000, 0, 200);
   man.motor(rb::MotorId::M4).speed(0);
   man.motor(rb::MotorId::M1).speed(0);
-
-
-
-
-
-
-
-
-
-
- klepeto.Move(open);
- delay(1000);
- Straight(1000,200);
- // Serial.println(klepeto.last_state);
-klepeto.Move(triangle);
-//Serial.println(klepeto.last_state);
-//klepeto.Move(full_closed);
-//Serial.println(klepeto.last_state);
-Straight(1000,200);
+  klepeto.Move(full_closed);
 
 
 
