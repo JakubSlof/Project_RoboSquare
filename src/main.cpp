@@ -384,11 +384,11 @@ while(ticks_M1 < (distance_to_go/mm_to_ticks)){ //ticks_M1 < (distance_to_go/mm_
 
 //   speed_r = speed_r + error*coef;
 //   speed_l = speed_l - error*coef;
-if(distance_us<200){
-  coef = 4000;
+if(distance_us<250){
+  coef = 3500;
 }
-if(distance_us>400){
-  coef = -4000;
+if(distance_us>500){
+  coef = -3500;
 }
 
 
