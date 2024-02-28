@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "SmartServoBus.hpp"
 #include "RBCX.h"
+#include <cmath>
 
 using namespace lx16a;
 static SmartServoBus servoBus;
@@ -323,7 +324,15 @@ void setup()
   int distance_us= 0;
   int distance_l =0;
   int distance_r =0;
-
+  int ticks_M4 = 0;
+  int ticks_M1 = 0;
+  int speed_l = 8000;
+  int speed_r = 8000;
+  int distance_to_go = 12000;
+  int mid = 300;
+  int error =0;
+  
+double coef = 0.01;
 
 
   // Set the serial communication baud rate to 115200
@@ -341,8 +350,68 @@ void setup()
     delay(10);
   }
 delay(2000);
-while(true){
+
+//Straight(5000,12000);
+
+
+
+
+
+
+
+while(ticks_M1 < (distance_to_go/mm_to_ticks)){ //ticks_M1 < (distance_to_go/mm_to_ticks)
   distance_us = man.ultrasound(0).measure();
+//   error = distance_us - mid;
+
+// if(speed_l>4000){
+//   speed_l = 3200;
+// }
+
+// if(speed_r>4000){
+//   speed_r = 3200;
+// }
+
+// if(speed_r<2000){
+//   speed_r = 3200;
+// }
+// if(speed_l<2000){
+//   speed_l = 3200;
+// }
+// if(abs(speed_l-speed_r)>600)
+// {
+// coef = 0.01;
+// }
+
+//   speed_r = speed_r + error*coef;
+//   speed_l = speed_l - error*coef;
+if(distance_us<200){
+  coef = 4000;
+}
+if(distance_us>400){
+  coef = -4000;
+}
+
+
+ 
+   man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor &info)
+                                           {
+            //Serial.println( info.position());
+            ticks_M4 =  info.position(); });
+    man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor &info)
+                                           {
+            //Serial.println( -info.position());
+            ticks_M1 =   -info.position(); });
+    
+    man.motor(rb::MotorId::M1).speed(-speed_l-coef);
+    man.motor(rb::MotorId::M4).speed(speed_r-coef);
+    // Serial.print("L:");
+    //Serial.println(speed_l);
+    //Serial.print("R:");
+    //Serial.println(speed_r);
+//Serial.println(distance_us);
+Serial.println(coef);
+coef = 0;
+    delay(50);
   
 }
 ///////////////////////////////////////////////  
