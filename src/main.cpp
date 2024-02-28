@@ -317,6 +317,15 @@ void setup()
   par.max_diff_readings = 1;
 
 
+
+
+
+  int distance_us= 0;
+  int distance_l =0;
+  int distance_r =0;
+
+
+
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
   // Serial.println(man.battery().voltageMv());
@@ -331,163 +340,35 @@ void setup()
 
     delay(10);
   }
-  delay(500);
-  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
-  servoBus.setAutoStopParams(par);
-  //servoBus.setAutoStop(0, false);
-  //servoBus.setAutoStop(1, true);
-  //klepeto.Move(full_closed);
-  delay(1000);
-  klepeto.Move(triangle);
-  Acceleration(300, 32000, 400); // default 500
-  arc_right(180, 180);
-  Straight(32000, 100);
-  servoBus.set(0,90_deg);
-  arc_left(160, 150);
-  servoBus.set(0,95_deg);
-  Straight(32000, 300);
-  Acceleration(32000, 0, 200);
-  man.motor(rb::MotorId::M4).speed(0);
-  man.motor(rb::MotorId::M1).speed(0);
-  klepeto.Move(full_closed);
-
-
-
-
-  // Serial.println(servoBus.pos(0).deg());
-  // Serial.println(servoBus.pos(1).deg());
-  //  servoBus.set(0, 180_deg);
-  //  servoBus.set(1, 180_deg);
-  //  Serial.println(servoBus.pos(0).deg());
-  //  Serial.println(servoBus.pos(1).deg());
-
-  //  Angle promena = 0_deg;
-  //  servoBus.set(0, promena);
-  //  //Angle angle = 2_deg;
-  //   for(int i = 0; i<12;i++){
-  //     servoBus.set(0, promena);
-  //     Serial.println(servoBus.pos(0).deg());
-  //     delay(200);
-
-  //     //promena = promena+angle;
-  //   }
-
-  //////////////////////////////
-  // starting button
-  while (true)
-  {
-    if (man.buttons().up() == 1)
-    {
-      break;
-    }
-
-    delay(10);
-  }
-  delay(500);
-
-  // functions in testing
-  arm.Drivemode();
-  delay(500);
-  //////////////////////////////////////////
-  // int distance;
-  // while (true)
-  // {
-  //   distance = man.ultrasound(0).measure();
-  //   Serial.println(distance);
-  //   if (man.buttons().up()==1)
-  //     {
-  //       break;
-  //     }
-  //   delay(100);
-  // }
-
-  //   while (true)
-  //   {
-  //     if (man.buttons().up()==1)
-  //     {
-  //       break;
-  //     }
-
-  //     delay(10);
-  //   }
-  //   delay(500);
-
-  ////////////////////////////////////////
-  // Straight(3200, 1000);
-  // esko == pos1
-  Acceleration(300, 32000, 400); // default 500
-  arc_right(180, 180);
-  // Straight(32000, 100);
-  arc_left(165, 200);
-  Straight(32000, 300);
-  Acceleration(32000, 0, 100);
-  man.motor(rb::MotorId::M4).speed(0);
-  man.motor(rb::MotorId::M1).speed(0);
-  // go to pos2
-  delay(2000);
-  ////////////////
-  Turn(180);
-  Acceleration(1000, 32000, 100);
-  Straight(32000, 300);
-  arc_right(165, 200);
-  Straight(32000, 300);
-  arc_left(180, 180);
-  Straight(32000, 300);
-
-  /////////////////////////////////////////
-  //   Acceleration(500,32000,400);
-  //   Acceleration(32000,500,400);
-  //   man.motor(rb::MotorId::M4).speed(0);
-  //   man.motor(rb::MotorId::M1).speed(0);
-  //   delay(100);
-  //   Turn(165);
-  //   delay(1000);
-  //   int i = 0;
-  // while (i<300)
-  // {
-  //   i=i+1;
-  //   man.motor(rb::MotorId::M4).speed(-500);
-  //   man.motor(rb::MotorId::M1).speed(500);
-  //    delay(10);
-  // }
-  //   man.motor(rb::MotorId::M4).speed(0);
-  //   man.motor(rb::MotorId::M1).speed(0);
-
-  /////////////////////////////////////////////////////////////////////////////////////
-  // measuring();
-  // test();
-  // delay(10000);
-  // Straight(1000, 2000);
-  // man.stupidServo(0).setPosition(1);
-  //
-  // Serial.println("hovno");
-  //
-  //
-  //
-
-  // Straight(3200,300);
-  // Acceleration(3200,100,200);
-  //  while (true) {
-  //          if(man.buttons().left()){
-  //            man.motor(rb::MotorId::M4).speed(20000);
-  //          }
-  //          else if(man.buttons().right()){
-  //            man.motor(rb::MotorId::M1).speed(20000);
-  //          }
-  //          if(man.buttons().down()) {
-  //              man.stupidServo(0).setPosition(2.0); // on button down, set servo to min range
-  //          }
-  //          else if(man.buttons().up()) {
-  //              man.stupidServo(0).setPosition(-2.0); // on button up, set servo to max range
-  //          }
-  //          else {
-  //              man.stupidServo(0).setPosition(0); // default center position
-  //              //man.motor(rb::MotorId::M4).speed(0);
-  //              //man.motor(rb::MotorId::M1).speed(0);
-  //          }
-  //      }
+delay(2000);
+while(true){
+  distance_us = man.ultrasound(0).measure();
+  
 }
-
+///////////////////////////////////////////////  
+  // // Connecting to the servo bus 
+  // delay(500);
+  // servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
+  // servoBus.setAutoStopParams(par);
+  // //servoBus.setAutoStop(0, false);
+  // //servoBus.setAutoStop(1, true);
+  // //klepeto.Move(full_closed);
+  // delay(1000);
+  // klepeto.Move(triangle);
+  // Acceleration(300, 32000, 400); // default 500
+  // arc_right(180, 180);
+  // Straight(32000, 100);
+  // servoBus.set(0,90_deg);
+  // arc_left(160, 150);
+  // servoBus.set(0,95_deg);
+  // Straight(32000, 300);
+  // Acceleration(32000, 0, 200);
+  // man.motor(rb::MotorId::M4).speed(0);
+  // man.motor(rb::MotorId::M1).speed(0);
+  // klepeto.Move(full_closed);
+//////////////////////////////
+  // starting button
+}
 void loop()
 {
   // Serial.print("L: ");
