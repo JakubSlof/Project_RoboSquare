@@ -1,7 +1,4 @@
-#include <Arduino.h>
-#include "SmartServoBus.hpp"
-#include "RBCX.h"
-#include <cmath>
+#include<Robo_square.h>
 
 using namespace lx16a;
 static SmartServoBus servoBus;
@@ -89,7 +86,7 @@ void arc_right(int angle, int radius)
 }
 void Straight(int speed, int distance)
 {
-  auto &man = rb::Manager::get();
+
   man.motor(rb::MotorId::M1).setCurrentPosition(0);
   man.motor(rb::MotorId::M4).setCurrentPosition(0);
   int ticks_M1 = 0;
@@ -310,36 +307,16 @@ void setup()
   // Install the manager
   man.install();
   klepeto Klepeto_L, Klepeto_R;
-  arm arm;
   klepeta klepeto;
   //for setting autostop parameters
   SmartServoBus::AutoStopParams par;
   par.max_diff_centideg = 1000;
   par.max_diff_readings = 1;
 
-
-
-
-
-  int distance_us= 0;
-  int distance_l =0;
-  int distance_r =0;
-  int ticks_M4 = 0;
-  int ticks_M1 = 0;
-  int speed_l = 8000;
-  int speed_r = 8000;
-  int distance_to_go = 12000;
-  int mid = 300;
-  int error =0;
-  
-double coef = 0.01;
-
-
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
-  // Serial.println(man.battery().voltageMv());
+ 
   ///////////////////////////////////////////////
-  Serial.println(klepeto.last_state);
   while (true)
   {
     if (man.buttons().up() == 1)
@@ -349,71 +326,10 @@ double coef = 0.01;
 
     delay(10);
   }
-delay(2000);
-
-//Straight(5000,12000);
 
 
 
 
-
-
-
-while(ticks_M1 < (distance_to_go/mm_to_ticks)){ //ticks_M1 < (distance_to_go/mm_to_ticks)
-  distance_us = man.ultrasound(0).measure();
-//   error = distance_us - mid;
-
-// if(speed_l>4000){
-//   speed_l = 3200;
-// }
-
-// if(speed_r>4000){
-//   speed_r = 3200;
-// }
-
-// if(speed_r<2000){
-//   speed_r = 3200;
-// }
-// if(speed_l<2000){
-//   speed_l = 3200;
-// }
-// if(abs(speed_l-speed_r)>600)
-// {
-// coef = 0.01;
-// }
-
-//   speed_r = speed_r + error*coef;
-//   speed_l = speed_l - error*coef;
-if(distance_us<250){
-  coef = 3500;
-}
-if(distance_us>500){
-  coef = -3500;
-}
-
-
- 
-   man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor &info)
-                                           {
-            //Serial.println( info.position());
-            ticks_M4 =  info.position(); });
-    man.motor(rb::MotorId::M1).requestInfo([&ticks_M1](rb::Motor &info)
-                                           {
-            //Serial.println( -info.position());
-            ticks_M1 =   -info.position(); });
-    
-    man.motor(rb::MotorId::M1).speed(-speed_l-coef);
-    man.motor(rb::MotorId::M4).speed(speed_r-coef);
-    // Serial.print("L:");
-    //Serial.println(speed_l);
-    //Serial.print("R:");
-    //Serial.println(speed_r);
-//Serial.println(distance_us);
-Serial.println(coef);
-coef = 0;
-    delay(50);
-  
-}
 ///////////////////////////////////////////////  
   // // Connecting to the servo bus 
   // delay(500);
